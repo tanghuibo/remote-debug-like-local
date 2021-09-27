@@ -1,19 +1,20 @@
 import org.jetbrains.changelog.markdownToHTML
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 fun properties(key: String) = project.findProperty(key).toString()
 
 plugins {
     // Java support
     id("java")
-    // Kotlin support
-    id("org.jetbrains.kotlin.jvm") version "1.5.30"
     // Gradle IntelliJ Plugin
     id("org.jetbrains.intellij") version "1.1.6"
     // Gradle Changelog Plugin
     id("org.jetbrains.changelog") version "1.3.0"
     // Gradle Qodana Plugin
     id("org.jetbrains.qodana") version "0.1.12"
+}
+
+dependencies {
+    implementation("com.alibaba:fastjson:1.2.76")
 }
 
 group = properties("pluginGroup")
@@ -57,9 +58,6 @@ tasks {
             sourceCompatibility = it
             targetCompatibility = it
             options.encoding = "UTF-8"
-        }
-        withType<KotlinCompile> {
-            kotlinOptions.jvmTarget = it
         }
     }
 
