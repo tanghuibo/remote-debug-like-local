@@ -1,27 +1,18 @@
 package com.github.tanghuibo.remotedebuglikelocal.ui.compoment;
 
 import com.github.tanghuibo.remotedebuglikelocal.utils.ViewDebugUtils;
-import com.intellij.execution.filters.TextConsoleBuilderFactory;
-import com.intellij.execution.ui.ConsoleView;
-import com.intellij.execution.ui.ConsoleViewContentType;
-import com.intellij.ide.CommonActionsManager;
-import com.intellij.ide.OccurenceNavigator;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.actionSystem.impl.ActionToolbarImpl;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IconManager;
 import com.intellij.ui.IconWrapperWithToolTip;
+import com.intellij.ui.JBSplitter;
 import com.intellij.ui.components.panels.Wrapper;
-import com.intellij.util.ui.JBUI;
-import com.intellij.xdebugger.impl.actions.XDebuggerActions;
+import com.intellij.util.ui.JBEmptyBorder;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 
 /**
  * ConsoleLogJComponent
@@ -38,28 +29,45 @@ public class TestJComponent extends JComponent {
 
         final DefaultActionGroup framesGroup = new DefaultActionGroup();
 
+        ActionToolbarImpl toolbar =
+                (ActionToolbarImpl)ActionManager.getInstance().createActionToolbar("thb-test1", framesGroup, false);
+
+
         framesGroup.add(new AnAction(IconManager.getInstance().getIcon("actions/refresh.svg", IconWrapperWithToolTip.class)) {
+
+            ViewDebugUtils viewDebugUtils = null;
+
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
+                System.out.println(viewDebugUtils);
+                System.out.println(toolbar);
             }
 
         });
 
 
-        final ActionToolbarImpl toolbar =
-                (ActionToolbarImpl)ActionManager.getInstance().createActionToolbar("consoleFresss", framesGroup, false);
         toolbar.setReservePlaceAutoPopupIcon(false);
-        toolbar.getComponent().setBorder(JBUI.Borders.empty(1));
+        JBEmptyBorder jbEmptyBorder = new JBEmptyBorder(2);
+        toolbar.setBorder(jbEmptyBorder);
 
 
         wrapper.add(toolbar, BorderLayout.WEST);
 
         wrapper.setSize(500, 500);
 
-        JButton jButton1 = new JButton("test1");
-        jButton1.setSize(200, 200);
-        wrapper.add(jButton1);
+        JBSplitter jbSplitter = new JBSplitter();
 
+
+        jbSplitter.setFirstComponent(RunLogListWrapper.build());
+
+        JButton jButton2 = new JButton("test2");
+        jButton2.setSize(200, 200);
+        jbSplitter.setSecondComponent(jButton2);
+
+
+
+
+        wrapper.add(jbSplitter);
 
         add(wrapper);
 
