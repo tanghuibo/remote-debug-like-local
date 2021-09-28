@@ -4,6 +4,7 @@ import com.intellij.openapi.wm.ToolWindow;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.List;
 
@@ -55,6 +56,7 @@ public class ViewDebugUtils {
         componentMap.put(uuid, component);
         viewDebugInfo.setList(new ArrayList<>());
         viewDebugInfo.setUuid(uuid);
+        viewDebugInfo.setText(getText(component));
 
         list.add(viewDebugInfo);
 
@@ -85,6 +87,8 @@ public class ViewDebugUtils {
         private String name;
 
         private String uuid;
+
+        private String text;
         
         private List<ViewDebugInfo> list;
 
@@ -118,6 +122,24 @@ public class ViewDebugUtils {
 
         public void setUuid(String uuid) {
             this.uuid = uuid;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
+    }
+
+    static String getText(Object o) {
+        try {
+            Method method = o.getClass().getDeclaredMethod("getText");
+            Object invoke = method.invoke(o);
+            return invoke.toString();
+        } catch (Exception e) {
+            return null;
         }
     }
 

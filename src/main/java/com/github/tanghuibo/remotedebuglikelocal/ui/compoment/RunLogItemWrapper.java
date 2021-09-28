@@ -1,23 +1,18 @@
 package com.github.tanghuibo.remotedebuglikelocal.ui.compoment;
 
-import com.github.tanghuibo.remotedebuglikelocal.utils.ViewDebugUtils;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.actionSystem.impl.ActionButton;
-import com.intellij.openapi.actionSystem.impl.ActionButtonWithText;
-import com.intellij.openapi.actionSystem.impl.ActionToolbarImpl;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.ex.MultiLineLabel;
 import com.intellij.ui.IconManager;
 import com.intellij.ui.IconWrapperWithToolTip;
-import com.intellij.ui.components.panels.HorizontalLayout;
-import com.intellij.ui.components.panels.VerticalLayout;
 import com.intellij.ui.components.panels.Wrapper;
-import com.intellij.util.ui.JBEmptyBorder;
 import org.apache.batik.gvt.event.AWTEventDispatcher;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.lang.reflect.Field;
 
 /**
  * RunLogItemWrapper
@@ -28,9 +23,9 @@ import java.lang.reflect.Field;
 public class RunLogItemWrapper {
     private JComponent btn;
     private Wrapper root;
-    private JLabel text;
+    private MultiLineLabel text;
 
-    static JComponent build() {
+    static JComponent build(Project project) {
         RunLogItemWrapper runLogItemWrapper = new RunLogItemWrapper();
         runLogItemWrapper.root = new Wrapper();
         BorderLayout horizontalLayout = new BorderLayout();
@@ -45,6 +40,7 @@ public class RunLogItemWrapper {
                 this.getTemplatePresentation().setIcon(icon);
             }
         };
+
         Presentation templatePresentation = anAction.getTemplatePresentation();
         runLogItemWrapper.btn = new ActionButton(anAction, templatePresentation,"thb-test", new Dimension(30, 30)) {
             @Override
@@ -55,8 +51,10 @@ public class RunLogItemWrapper {
         templatePresentation.setEnabled(true);
         runLogItemWrapper.root.add(runLogItemWrapper.btn, BorderLayout.WEST);
 
+        runLogItemWrapper.btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        runLogItemWrapper.text = new JLabel();
+        runLogItemWrapper.text = new MultiLineLabel();
+        runLogItemWrapper.text.setCursor(new Cursor(Cursor.HAND_CURSOR));
         runLogItemWrapper.text.addMouseListener(new AWTEventDispatcher() {
             @Override
             public void mouseClicked(MouseEvent evt) {
@@ -65,7 +63,7 @@ public class RunLogItemWrapper {
             }
         });
         runLogItemWrapper.text.setText("你好adasdasdasdasdasdasasdasdasdassssssssssssss啊");
-
+        runLogItemWrapper.text.setToolTipText("你好adasdasdasdasdasdasasdasdasdassssssssssssss啊");
 
         runLogItemWrapper.root.add(runLogItemWrapper.text, BorderLayout.CENTER);
 
