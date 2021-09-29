@@ -1,28 +1,21 @@
 package com.github.tanghuibo.remotedebuglikelocal.ui.compoment;
 
-import com.github.tanghuibo.remotedebuglikelocal.utils.ViewDebugUtils;
+import com.alibaba.fastjson.JSON;
+import com.github.tanghuibo.remotedebuglikelocal.dto.RemoteInfoDto;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.actionSystem.impl.ActionToolbarImpl;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Splitter;
-import com.intellij.openapi.wm.WindowManager;
-import com.intellij.openapi.wm.impl.IdeGlassPaneImpl;
-import com.intellij.ui.IconManager;
-import com.intellij.ui.IconWrapperWithToolTip;
 import com.intellij.ui.JBSplitter;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.panels.Wrapper;
-import com.intellij.util.ui.JBEmptyBorder;
-import org.apache.batik.gvt.event.AWTEventDispatcher;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.AWTEventListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * ConsoleLogJComponent
@@ -32,9 +25,35 @@ import java.lang.reflect.Method;
  */
 public class TestJComponent extends JComponent {
 
+    private final EnableAnAction logAnAction;
+    private final EnableAnAction stopAction;
+    private final RunLogListWrapper runLogListWrapper;
+    private final ActionToolbarImpl toolbar;
+    private final EnableAnAction refreshAction;
+    private final DefaultActionGroup framesGroup;
+
+    List<RemoteInfoDto> remoteInfoDtoList;
+
+
 
 
     public TestJComponent(Project project) {
+        remoteInfoDtoList = JSON.parseArray("[{\n" +
+                "  \"env\": \"dev\",\n" +
+                "  \"host\": \"127.0.0.1\",\n" +
+                "  \"port\": \"8080\",\n" +
+                "  \"logStatus\": 0\n" +
+                "},{\n" +
+                "  \"env\": \"test\",\n" +
+                "  \"host\": \"10.40.1.105\",\n" +
+                "  \"port\": \"80\",\n" +
+                "  \"logStatus\": 0\n" +
+                "},{\n" +
+                "  \"env\": \"prod\",\n" +
+                "  \"host\": \"www.test.com\",\n" +
+                "  \"port\": \"80\",\n" +
+                "  \"logStatus\": 0\n" +
+                "}]", RemoteInfoDto.class);
         Wrapper wrapper = new Wrapper();
 
         wrapper.setSize(getSize());
@@ -46,29 +65,54 @@ public class TestJComponent extends JComponent {
             }
         });
 
-        final DefaultActionGroup framesGroup = new DefaultActionGroup();
 
-        ActionToolbarImpl toolbar =
-                (ActionToolbarImpl)ActionManager.getInstance().createActionToolbar("thb-test1", framesGroup, false);
-
-
-
-        framesGroup.add(new AnAction(IconManager.getInstance().getIcon("actions/refresh.svg", IconWrapperWithToolTip.class)) {
-
-            ViewDebugUtils viewDebugUtils = null;
+        this.refreshAction = new EnableAnAction("actions/refresh.svg") {
 
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                System.out.println(viewDebugUtils);
-                System.out.println(toolbar);
+
+            }
+        };
+
+        this.stopAction = new EnableAnAction("actions/suspend.svg") {
+
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                Integer logStatus = 0;
+                runLogListWrapper.getSelected().setLogStatus(logStatus);
+                updateLogStatus(logStatus);
+                runLogListWrapper.updateUi();
+            }
+        };
+
+        this.logAnAction = new EnableAnAction("actions/find.svg") {
+
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                Integer logStatus = 1;
+                runLogListWrapper.getSelected().setLogStatus(logStatus);
+                updateLogStatus(logStatus);
+                runLogListWrapper.updateUi();
             }
 
-        });
+            @Override
+            public void update(@NotNull AnActionEvent e) {
+                super.update(e);
+            }
+        };
 
 
-        toolbar.setReservePlaceAutoPopupIcon(false);
-        toolbar.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.decode("#323232")));
+        this.framesGroup = new DefaultActionGroup();
+        logAnAction.setEnabled(false);
+        stopAction.setEnabled(false);
+        refreshAction.setEnabled(true);
+        framesGroup.add(logAnAction);
+        framesGroup.add(stopAction);
+        framesGroup.addSeparator();
+        framesGroup.add(refreshAction);
 
+        this.toolbar =
+                (ActionToolbarImpl)ActionManager.getInstance().createActionToolbar("thb-test1", framesGroup, false);
 
         wrapper.add(toolbar, BorderLayout.WEST);
 
@@ -77,25 +121,29 @@ public class TestJComponent extends JComponent {
 
         jbSplitter.setDividerPositionStrategy(Splitter.DividerPositionStrategy.KEEP_FIRST_SIZE);
 
-
-        JComponent jComponent = RunLogListWrapper.build(project);
-        JBScrollPane jbScrollPane = new JBScrollPane(jComponent);
+        this.runLogListWrapper = new RunLogListWrapper(project, remoteInfoDtoList);
+        runLogListWrapper.addSelectListen(item -> updateLogStatus(item.getLogStatus()));
+        JBScrollPane jbScrollPane = new JBScrollPane(runLogListWrapper.getComponent());
         jbScrollPane.setSize(50, jbScrollPane.getHeight());
         jbSplitter.setFirstComponent(jbScrollPane);
 
         JButton jButton2 = new JButton("test2");
         jButton2.setSize(200, 200);
         jbSplitter.setSecondComponent(jButton2);
-
-
-
-
         wrapper.add(jbSplitter);
-
         add(wrapper);
 
+    }
 
+    public void updateLogStatus(Integer logStatus) {
+        if(logStatus == 0) {
+            logAnAction.setEnabled(true);
+            stopAction.setEnabled(false);
 
+        } else if(logStatus == 1) {
+            logAnAction.setEnabled(false);
+            stopAction.setEnabled(true);
+        }
     }
 
 
