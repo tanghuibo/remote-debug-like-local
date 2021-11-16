@@ -21,8 +21,9 @@ import java.util.function.Consumer;
  * @author tanghuibo
  * @date 2021/9/28 15:51
  */
-public class RunLogListWrapper {
-    List<RemoteInfoDto> remoteInfoDtoList;
+public class RemoteVmListWrapper {
+
+    private List<RemoteInfoDto> remoteInfoDtoList;
 
     List<Consumer<RemoteInfoDto>> selectListenerList;
 
@@ -30,7 +31,7 @@ public class RunLogListWrapper {
 
     private JBList<Object> jbList;
 
-    public RunLogListWrapper(Project project, List<RemoteInfoDto> remoteInfoDtoList) {
+    public RemoteVmListWrapper(Project project, List<RemoteInfoDto> remoteInfoDtoList) {
         this.remoteInfoDtoList = remoteInfoDtoList;
         this.selectListenerList = new ArrayList<>();
     }
@@ -39,15 +40,11 @@ public class RunLogListWrapper {
         this.jbList = new JBList<>();
         jbList.setListData(remoteInfoDtoList.toArray(new RemoteInfoDto[0]));
         jbList.setCellRenderer(new DefaultListCellRenderer() {
-            Icon enableIcon = IconManager.getInstance().getIcon("/actions/find.svg", IconWrapperWithToolTip.class);
-            Icon disableIcon = IconLoader.getDisabledIcon(enableIcon);
-
+            final Icon icon = IconManager.getInstance().getIcon("/actions/find.svg", IconWrapperWithToolTip.class);
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if(value instanceof RemoteInfoDto) {
-                    setIcon(((RemoteInfoDto) value).getLogStatus() == 0 ? disableIcon : enableIcon);
-                }
+                setIcon(icon);
                 return component;
             }
         });
@@ -75,7 +72,9 @@ public class RunLogListWrapper {
         return selected;
     }
 
-    public void updateUi() {
-        jbList.updateUI();
+    public void setRemoteInfoDtoList(List<RemoteInfoDto> remoteInfoDtoList) {
+        this.remoteInfoDtoList = remoteInfoDtoList;
+        this.jbList.setListData(remoteInfoDtoList.toArray(new RemoteInfoDto[0]));
+        this.selected = null;
     }
 }

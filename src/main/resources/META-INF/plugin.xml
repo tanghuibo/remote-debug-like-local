@@ -10,8 +10,8 @@
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow
                 canCloseContents="false" anchor="bottom"
-                id="DebugLogToolWindowFactory"
-                factoryClass="com.github.tanghuibo.remotedebuglikelocal.ui.factory.DebugLogToolWindowFactory">
+                id="remote-debug"
+                factoryClass="com.github.tanghuibo.remotedebuglikelocal.ui.factory.DebugToolWindowFactory">
         </toolWindow>
     </extensions>
 

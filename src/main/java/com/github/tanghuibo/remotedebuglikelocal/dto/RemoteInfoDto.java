@@ -26,14 +26,12 @@ public class RemoteInfoDto {
     /**
      * 端口
      */
-    private String port;
+    private Integer port;
 
     /**
-     * 日志状态
+     * 名称
      */
-    private Integer logStatus;
-
-    private List<Runnable> updateListenerList = new ArrayList<>();
+    private String name;
 
     public String getEnv() {
         return env;
@@ -51,37 +49,24 @@ public class RemoteInfoDto {
         this.host = host;
     }
 
-    public String getPort() {
+    public Integer getPort() {
         return port;
     }
 
-    public void setPort(String port) {
+    public void setPort(Integer port) {
         this.port = port;
     }
 
     @Override
     public String toString() {
-        return env + "-" + host + (StringUtils.isEmpty(port) ? "": (":" + port));
+        return name + "-" + host + ":" + port;
     }
 
-    public Integer getLogStatus() {
-        return logStatus;
+    public String getName() {
+        return name;
     }
 
-    public void setLogStatus(Integer logStatus) {
-        if(!logStatus.equals(this.logStatus)) {
-            update();
-        }
-        this.logStatus = logStatus;
-    }
-
-    private void update() {
-        for (Runnable runnable : updateListenerList) {
-            runnable.run();
-        }
-    }
-
-    public void addUpdateListener(Runnable runnable) {
-        this.updateListenerList.add(runnable);
+    public void setName(String name) {
+        this.name = name;
     }
 }
