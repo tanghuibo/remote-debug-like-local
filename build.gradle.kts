@@ -14,7 +14,6 @@ plugins {
 }
 
 dependencies {
-    implementation("com.alibaba:fastjson:1.2.76")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.13.0")
 }

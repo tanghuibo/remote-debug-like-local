@@ -15,6 +15,12 @@
         </toolWindow>
     </extensions>
 
+    <actions>
+        <action id="ReplaceRemoteClass" class="com.github.tanghuibo.remotedebuglikelocal.action.ReplaceClassAction" text="Replace Remote Class" description="Replace remote class">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="ReplaceInPath"/>
+        </action>
+    </actions>
+
     <applicationListeners>
     </applicationListeners>
 </idea-plugin>
