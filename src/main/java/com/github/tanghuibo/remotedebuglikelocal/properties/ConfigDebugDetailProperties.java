@@ -12,7 +12,7 @@ public class ConfigDebugDetailProperties {
 
     private String env;
 
-    private String ip;
+    private String host;
 
     private Integer port;
 
@@ -32,12 +32,12 @@ public class ConfigDebugDetailProperties {
         this.env = env;
     }
 
-    public String getIp() {
-        return ip;
+    public String getHost() {
+        return host;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setHost(String host) {
+        this.host = host;
     }
 
     public Integer getPort() {

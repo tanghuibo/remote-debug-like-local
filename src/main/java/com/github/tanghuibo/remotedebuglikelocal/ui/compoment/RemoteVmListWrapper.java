@@ -4,9 +4,6 @@ package com.github.tanghuibo.remotedebuglikelocal.ui.compoment;
 
 import com.github.tanghuibo.remotedebuglikelocal.dto.RemoteInfoDto;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.IconLoader;
-import com.intellij.ui.IconManager;
-import com.intellij.ui.IconWrapperWithToolTip;
 import com.intellij.ui.components.JBList;
 
 import javax.swing.*;
@@ -40,7 +37,7 @@ public class RemoteVmListWrapper {
         this.jbList = new JBList<>();
         jbList.setListData(remoteInfoDtoList.toArray(new RemoteInfoDto[0]));
         jbList.setCellRenderer(new DefaultListCellRenderer() {
-            final Icon icon = IconManager.getInstance().getIcon("/actions/find.svg", IconWrapperWithToolTip.class);
+            final Icon icon = new ImageIcon(getToolkit().createImage(RemoteVmListWrapper.class.getResource("/icon/jkc.png")));
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);

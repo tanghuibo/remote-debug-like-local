@@ -35,7 +35,7 @@ public class ConfigUtils {
             return configProperties.getDebug().stream().map(item -> {
                 RemoteInfoDto remoteInfoDto = new RemoteInfoDto();
                 remoteInfoDto.setEnv(item.getEnv());
-                remoteInfoDto.setHost(item.getIp());
+                remoteInfoDto.setHost(item.getHost());
                 remoteInfoDto.setPort(item.getPort());
                 remoteInfoDto.setName(item.getName());
                 return remoteInfoDto;
